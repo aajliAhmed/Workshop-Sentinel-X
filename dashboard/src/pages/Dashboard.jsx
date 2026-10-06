@@ -9,90 +9,56 @@ import CameraPanel from "../components/CameraPanel";
 import ControlPanel from "../components/ControlPanel";
 
 import {
-  initialTelemetry,
   initialHistory,
   initialAlerts,
 } from "../data/mockData";
 
+import { useTelemetry } from "../hooks/useTelemetry";
+
+
 export default function Dashboard() {
 
-  const [telemetry, setTelemetry] =
-    useState(initialTelemetry);
+  // =========================================
+  // TELEMETRY
+  // =========================================
+
+  const {
+    telemetry,
+    connected,
+    isMock,
+  } = useTelemetry();
+
+
+  // =========================================
+  // HISTORIQUE DES MESURES
+  // =========================================
 
   const [history, setHistory] =
     useState(initialHistory);
 
+
+  // =========================================
+  // ALERTES
+  // =========================================
+
   const [alerts, setAlerts] =
     useState(initialAlerts);
 
-  /*
-   * Simulation temporaire des données ESP32.
-   *
-   * Plus tard cette partie sera remplacée
-   * par la réception WebSocket du backend.
-   */
+
+  // =========================================
+  // AJOUT D'UN POINT AU GRAPHIQUE
+  // =========================================
 
   useEffect(() => {
 
-    const interval = setInterval(() => {
+    if (
+      telemetry.temperature === null ||
+      telemetry.humidity === null ||
+      telemetry.gas === null
+    ) {
+      return;
+    }
 
-      setTelemetry((previous) => {
-
-        const newTemperature =
-          Number(
-            (
-              previous.temperature +
-              (Math.random() - 0.5) * 0.6
-            ).toFixed(1)
-          );
-
-        const newHumidity =
-          Number(
-            (
-              previous.humidity +
-              (Math.random() - 0.5) * 0.8
-            ).toFixed(1)
-          );
-
-        const newGas =
-          Math.max(
-            0,
-            Math.round(
-              previous.gas +
-              (Math.random() - 0.5) * 12
-            )
-          );
-
-        const newMotion =
-          Math.random() > 0.85;
-
-        return {
-          ...previous,
-
-          temperature: newTemperature,
-          humidity: newHumidity,
-          gas: newGas,
-          motion: newMotion,
-
-          timestamp: Date.now(),
-        };
-
-      });
-
-    }, 2000);
-
-    return () => {
-      clearInterval(interval);
-    };
-
-  }, []);
-
-
-  /*
-   * Mise à jour de l'historique
-   */
-
-  useEffect(() => {
 
     setHistory((previous) => {
 
@@ -108,7 +74,9 @@ export default function Dashboard() {
           }
         );
 
+
       const newPoint = {
+
         time,
 
         temperature:
@@ -119,7 +87,9 @@ export default function Dashboard() {
 
         gas:
           telemetry.gas,
+
       };
+
 
       return [
         ...previous.slice(-11),
@@ -135,27 +105,31 @@ export default function Dashboard() {
   ]);
 
 
-  /*
-   * Commandes
-   */
+  // =========================================
+  // TEST ALARME
+  // =========================================
 
   const handleAlarm = () => {
 
     const newAlert = {
+
       id: Date.now(),
 
       type: "WARNING",
 
       title: "Manual alarm test",
 
-      message:
-        "Alarm command triggered from dashboard",
+      message: isMock
+        ? "Alarm simulated from dashboard"
+        : "Alarm command sent to ESP32",
 
       time:
         new Date().toLocaleTimeString(
           "fr-FR"
         ),
+
     };
+
 
     setAlerts((previous) => [
       newAlert,
@@ -165,23 +139,31 @@ export default function Dashboard() {
   };
 
 
+  // =========================================
+  // TEST LED
+  // =========================================
+
   const handleLed = () => {
 
     const newAlert = {
+
       id: Date.now(),
 
       type: "INFO",
 
       title: "LED command",
 
-      message:
-        "LED command sent to ESP32",
+      message: isMock
+        ? "LED command simulated"
+        : "LED command sent to ESP32",
 
       time:
         new Date().toLocaleTimeString(
           "fr-FR"
         ),
+
     };
+
 
     setAlerts((previous) => [
       newAlert,
@@ -190,6 +172,10 @@ export default function Dashboard() {
 
   };
 
+
+  // =========================================
+  // RESET
+  // =========================================
 
   const handleReset = () => {
 
@@ -198,39 +184,58 @@ export default function Dashboard() {
   };
 
 
+  // =========================================
+  // INTERFACE
+  // =========================================
+
   return (
 
     <main className="dashboard">
 
+
+      {/* HEADER */}
+
       <Header
-        connected={telemetry.esp32}
+        connected={connected}
       />
 
 
-      {/* SENSOR CARDS */}
+      {/* ================================
+          SENSOR CARDS
+      ================================= */}
 
       <section className="sensor-grid">
+
 
         <SensorCard
           type="temperature"
           title="Temperature"
-          value={telemetry.temperature}
+          value={
+            telemetry.temperature
+          }
           unit="°C"
         />
+
 
         <SensorCard
           type="humidity"
           title="Humidity"
-          value={telemetry.humidity}
+          value={
+            telemetry.humidity
+          }
           unit="%"
         />
+
 
         <SensorCard
           type="gas"
           title="Gas / Smoke"
-          value={telemetry.gas}
+          value={
+            telemetry.gas
+          }
           unit="ppm"
         />
+
 
         <SensorCard
           type="motion"
@@ -251,9 +256,12 @@ export default function Dashboard() {
       </section>
 
 
-      {/* CHARTS */}
+      {/* ================================
+          GRAPHIQUES
+      ================================= */}
 
       <section className="charts-grid">
+
 
         <div className="panel">
 
@@ -266,6 +274,7 @@ export default function Dashboard() {
 
         </div>
 
+
         <div className="panel">
 
           <SensorChart
@@ -277,31 +286,48 @@ export default function Dashboard() {
 
         </div>
 
+
       </section>
 
 
-      {/* SECOND ROW */}
+      {/* ================================
+          STATUS + CAMERA
+      ================================= */}
 
       <section className="content-grid">
 
+
         <SystemStatus
-          esp32={telemetry.esp32}
-          mqtt={telemetry.mqtt}
-          server={telemetry.server}
+          esp32={
+            telemetry.esp32
+          }
+
+          mqtt={
+            telemetry.mqtt
+          }
+
+          server={
+            telemetry.server
+          }
         />
+
 
         <CameraPanel />
 
       </section>
 
 
-      {/* THIRD ROW */}
+      {/* ================================
+          ALERTS + COMMANDES
+      ================================= */}
 
       <section className="content-grid">
+
 
         <AlertPanel
           alerts={alerts}
         />
+
 
         <ControlPanel
           onAlarm={handleAlarm}
@@ -309,7 +335,9 @@ export default function Dashboard() {
           onReset={handleReset}
         />
 
+
       </section>
+
 
     </main>
 
