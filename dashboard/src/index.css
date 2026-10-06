@@ -1,0 +1,635 @@
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  font-family: Arial, Helvetica, sans-serif;
+
+  color: #f5f7fa;
+  background: #080b12;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background: #080b12;
+  color: #f5f7fa;
+}
+
+button {
+  font-family: inherit;
+}
+
+.dashboard {
+  width: 100%;
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 32px;
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-bottom: 32px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.brand-icon {
+  width: 52px;
+  height: 52px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #111621;
+  border: 1px solid #202838;
+  border-radius: 14px;
+
+  color: #32d583;
+}
+
+.brand h1 {
+  margin: 0;
+
+  font-size: 32px;
+  letter-spacing: 3px;
+}
+
+.brand p {
+  margin: 5px 0 0;
+
+  color: #8b93a7;
+  font-size: 14px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.connection {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.system-status {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+
+  border-radius: 50%;
+}
+
+.online-dot {
+  background: #32d583;
+  box-shadow: 0 0 12px rgba(50, 213, 131, 0.5);
+}
+
+.offline-dot {
+  background: #ff5c5c;
+}
+
+.online {
+  color: #32d583;
+}
+
+.offline {
+  color: #ff5c5c;
+}
+
+
+/* =====================================================
+   SENSOR CARDS
+===================================================== */
+
+.sensor-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, 1fr);
+
+  gap: 18px;
+}
+
+.sensor-card {
+  background: #111621;
+
+  border: 1px solid #202838;
+  border-radius: 16px;
+
+  padding: 22px;
+
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.sensor-card:hover {
+  transform: translateY(-2px);
+  border-color: #35415a;
+}
+
+.sensor-alert {
+  border-color: #ff5c5c;
+}
+
+.sensor-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.sensor-title {
+  margin: 0;
+
+  color: #8b93a7;
+
+  font-size: 14px;
+}
+
+.sensor-value {
+  margin-top: 12px;
+
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.sensor-unit {
+  margin-left: 5px;
+
+  color: #8b93a7;
+
+  font-size: 15px;
+  font-weight: 400;
+}
+
+.sensor-icon {
+  width: 45px;
+  height: 45px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 10px;
+
+  background: #1a2130;
+  color: #8b93a7;
+}
+
+.sensor-status {
+  margin-top: 20px;
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.sensor-status.normal {
+  color: #32d583;
+}
+
+.sensor-status.alert {
+  color: #ff5c5c;
+}
+
+
+/* =====================================================
+   PANELS
+===================================================== */
+
+.panel {
+  min-width: 0;
+
+  background: #111621;
+
+  border: 1px solid #202838;
+  border-radius: 16px;
+
+  padding: 22px;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 20px;
+}
+
+.panel-header h2 {
+  margin: 0;
+
+  font-size: 18px;
+}
+
+.panel-subtitle {
+  color: #8b93a7;
+
+  font-size: 12px;
+}
+
+
+/* =====================================================
+   CHARTS
+===================================================== */
+
+.charts-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, 1fr);
+
+  gap: 18px;
+
+  margin-top: 18px;
+}
+
+.chart-container {
+  width: 100%;
+}
+
+.chart-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 15px;
+}
+
+.chart-header h3 {
+  margin: 0;
+
+  font-size: 17px;
+}
+
+.chart-header span {
+  color: #8b93a7;
+
+  font-size: 12px;
+}
+
+
+/* =====================================================
+   SYSTEM STATUS
+===================================================== */
+
+.content-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, 1fr);
+
+  gap: 18px;
+
+  margin-top: 18px;
+}
+
+.status-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.status-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 17px 0;
+
+  border-bottom:
+    1px solid #202838;
+}
+
+.status-row:last-child {
+  border-bottom: none;
+}
+
+.status-name {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  color: #dce1ea;
+}
+
+.status-online {
+  color: #32d583;
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status-offline {
+  color: #ff5c5c;
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+
+/* =====================================================
+   CAMERA
+===================================================== */
+
+.camera-view {
+  min-height: 270px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 12px;
+
+  background:
+    radial-gradient(
+      circle at center,
+      #182030 0%,
+      #0c1019 70%
+    );
+
+  border: 1px solid #202838;
+
+  text-align: center;
+}
+
+.camera-icon {
+  color: #596276;
+
+  margin-bottom: 15px;
+}
+
+.camera-title {
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.camera-subtitle {
+  margin-top: 7px;
+
+  color: #8b93a7;
+
+  font-size: 13px;
+}
+
+.ai-status {
+  color: #32d583;
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.detection-badge {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  margin-top: 20px;
+  padding: 8px 12px;
+
+  border-radius: 20px;
+
+  background: #17231d;
+
+  color: #32d583;
+
+  font-size: 12px;
+}
+
+
+/* =====================================================
+   ALERTS
+===================================================== */
+
+.alert-count {
+  min-width: 24px;
+  height: 24px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #1a2130;
+
+  color: #8b93a7;
+
+  font-size: 12px;
+}
+
+.alerts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.alert-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 13px;
+
+  border-radius: 10px;
+
+  background: #0c1019;
+}
+
+.alert-icon {
+  display: flex;
+}
+
+.alert-content {
+  flex: 1;
+}
+
+.alert-content strong {
+  font-size: 14px;
+}
+
+.alert-content p {
+  margin: 4px 0 0;
+
+  color: #8b93a7;
+
+  font-size: 12px;
+}
+
+.alert-item time {
+  color: #596276;
+
+  font-size: 11px;
+}
+
+.alert-item.info {
+  color: #8b93a7;
+}
+
+.alert-item.warning {
+  color: #f6c453;
+}
+
+.alert-item.critical {
+  color: #ff5c5c;
+}
+
+.no-alert {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 20px;
+
+  border-radius: 10px;
+
+  background: #0c1019;
+
+  color: #32d583;
+}
+
+
+/* =====================================================
+   CONTROLS
+===================================================== */
+
+.controls {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, 1fr);
+
+  gap: 12px;
+}
+
+.control-button {
+  min-height: 90px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  border: 1px solid #202838;
+  border-radius: 12px;
+
+  background: #0c1019;
+
+  color: #dce1ea;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.control-button:hover {
+  background: #171e2b;
+  border-color: #35415a;
+}
+
+.control-button.alarm:hover {
+  color: #ff5c5c;
+}
+
+.control-button.led:hover {
+  color: #f6c453;
+}
+
+.control-button.reset:hover {
+  color: #32d583;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 1100px) {
+
+  .sensor-grid {
+    grid-template-columns:
+      repeat(2, 1fr);
+  }
+
+  .header-right {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+  }
+
+}
+
+
+@media (max-width: 850px) {
+
+  .charts-grid,
+  .content-grid {
+    grid-template-columns: 1fr;
+  }
+
+}
+
+
+@media (max-width: 600px) {
+
+  .dashboard {
+    padding: 18px;
+  }
+
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+
+    gap: 20px;
+  }
+
+  .header-right {
+    align-items: flex-start;
+  }
+
+  .sensor-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .controls {
+    grid-template-columns: 1fr;
+  }
+
+  .brand h1 {
+    font-size: 26px;
+  }
+
+}
