@@ -1,0 +1,13 @@
+services:
+  mqtt:
+    image: eclipse-mosquitto:2
+    container_name: sentinel-mqtt
+    ports:
+      - "8883:8883"
+    volumes:
+      - ./config/mosquitto:/mosquitto/config
+    user: "0:0"
+    command: >
+      sh -c "chmod 644 /mosquitto/config/certs/server.key &&
+             exec mosquitto -c /mosquitto/config/mosquitto.conf"
+    restart: unless-stopped

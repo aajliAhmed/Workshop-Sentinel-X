@@ -1,0 +1,11 @@
+services:
+  mqtt:
+    image: eclipse-mosquitto:2
+    container_name: sentinel-mqtt
+    ports:
+      - "8883:8883"
+    volumes:
+      - ./config/mosquitto:/mosquitto/config
+    user: "1883:1883"
+    command: ["mosquitto", "-c", "/mosquitto/config/mosquitto.conf"]
+    restart: unless-stopped
