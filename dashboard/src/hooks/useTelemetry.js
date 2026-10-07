@@ -127,14 +127,24 @@ export function useTelemetry() {
 
         (data) => {
 
-          setTelemetry(
-            (previous) => ({
-              ...previous,
-              ...data,
-            })
-          );
+  setTelemetry(
+    (previous) => ({
+      ...previous,
+      ...data,
 
-        },
+      // MQ-2 pas encore installé
+      gas: data.gas ?? 0,
+
+      // Le backend répond via WebSocket
+      server: true,
+
+      // ESP32 et MQTT ne sont pas encore connectés réellement
+      esp32: false,
+      mqtt: false,
+    })
+  );
+
+},
 
         (status) => {
 
