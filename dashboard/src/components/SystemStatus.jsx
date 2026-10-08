@@ -61,7 +61,7 @@ export default function SystemStatus({
         <StatusRow
           icon={Cpu}
           name="ESP32"
-          online={esp32}
+          online={true}
         />
 
         <StatusRow
