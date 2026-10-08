@@ -19,9 +19,10 @@ export function useTelemetry() {
     useState(initialTelemetry);
 
   const [connected, setConnected] =
-    useState(
-      initialTelemetry.esp32
-    );
+    useState(initialTelemetry.esp32);
+
+  const [securityAlert, setSecurityAlert] =
+    useState(null);
 
 
   /*
@@ -36,9 +37,7 @@ export function useTelemetry() {
       return;
     }
 
-    console.log(
-      "[Telemetry] MOCK MODE"
-    );
+    console.log("[Telemetry] MOCK MODE");
 
     const interval = setInterval(() => {
 
@@ -75,20 +74,12 @@ export function useTelemetry() {
         return {
           ...previous,
 
-          temperature:
-            newTemperature,
+          temperature: newTemperature,
+          humidity: newHumidity,
+          gas: newGas,
+          motion: newMotion,
 
-          humidity:
-            newHumidity,
-
-          gas:
-            newGas,
-
-          motion:
-            newMotion,
-
-          timestamp:
-            Date.now(),
+          timestamp: Date.now(),
 
           esp32: true,
           mqtt: true,
@@ -118,33 +109,51 @@ export function useTelemetry() {
       return;
     }
 
-    console.log(
-      "[Telemetry] REAL MODE"
-    );
+    console.log("[Telemetry] REAL MODE");
 
     const socket =
       connectWebSocket(
 
         (data) => {
 
-  setTelemetry(
-    (previous) => ({
-      ...previous,
-      ...data,
+          /*
+           * -------------------------
+           * TELEMETRY
+           * -------------------------
+           */
 
-      // MQ-2 pas encore installé
-      gas: data.gas ?? 0,
+          if (data.type === "telemetry") {
 
-      // Le backend répond via WebSocket
-      server: true,
+            setTelemetry(previous => ({
+              ...previous,
+              ...data.data,
+              server: true,
+              mqtt: true,
+            }));
 
-      // ESP32 et MQTT ne sont pas encore connectés réellement
-      esp32: false,
-      mqtt: false,
-    })
-  );
+            return;
+          }
 
-},
+
+          /*
+           * -------------------------
+           * SECURITY ALERT
+           * -------------------------
+           */
+
+          if (data.type === "security_alert") {
+
+            console.log(
+              "[Telemetry] Security alert received:",
+              data.data
+            );
+
+            setSecurityAlert(data.data);
+
+            return;
+          }
+
+        },
 
         (status) => {
 
@@ -165,6 +174,7 @@ export function useTelemetry() {
   return {
     telemetry,
     connected,
+    securityAlert,
     isMock: USE_MOCK,
   };
 }

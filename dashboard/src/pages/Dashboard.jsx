@@ -22,11 +22,12 @@ export default function Dashboard() {
   // TELEMETRY
   // =========================================
 
-  const {
-    telemetry,
-    connected,
-    isMock,
-  } = useTelemetry();
+ const {
+  telemetry,
+  connected,
+  securityAlert,
+  isMock,
+} = useTelemetry();
 
 
   // =========================================
@@ -58,7 +59,6 @@ export default function Dashboard() {
     ) {
       return;
     }
-
 
     setHistory((previous) => {
 
@@ -103,6 +103,45 @@ export default function Dashboard() {
     telemetry.humidity,
     telemetry.gas,
   ]);
+
+  useEffect(() => {
+
+  if (!securityAlert) {
+    return;
+  }
+
+  const alert = {
+    id: Date.now(),
+
+    type:
+      securityAlert.level === "CRITIQUE"
+        ? "CRITICAL"
+        : securityAlert.level === "WARNING"
+          ? "WARNING"
+          : "INFO",
+
+    title:
+      securityAlert.event === "PERSON_DETECTED"
+        ? "Person detected"
+        : securityAlert.event,
+
+    message:
+      securityAlert.person_in_protected_zone
+        ? `Person detected in protected zone — Risk ${securityAlert.score}/10`
+        : `Security event — Risk ${securityAlert.score}/10`,
+
+    time:
+      new Date().toLocaleTimeString("fr-FR"),
+
+  };
+
+
+  setAlerts((previous) => [
+    alert,
+    ...previous,
+  ]);
+
+}, [securityAlert]);
 
 
   // =========================================
